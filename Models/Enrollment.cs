@@ -17,4 +17,11 @@ public class Enrollment
         Student = new Student(detailedEnrollmentDTO.Student);
         Course = new Course(detailedEnrollmentDTO.Course);
     }
+
+    public Enrollment(EnrollmentDTO enrollmentDTO) {
+        Id = enrollmentDTO.Id;
+        Grade = enrollmentDTO.Grade;
+        StudentId = enrollmentDTO.StudentId;
+        CourseId = enrollmentDTO.CourseId;
+    }
 }

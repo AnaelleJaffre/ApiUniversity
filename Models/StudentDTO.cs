@@ -8,7 +8,6 @@ public class StudentDTO
     public string LastName { get; set; } = null!;
     public string FirstName { get; set; } = null!;
     public DateTime EnrollmentDate { get; set; }
-    public List<Enrollment> Enrollments { get; set; } = new();
 
     public StudentDTO() {}
 
