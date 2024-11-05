@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApiUniversity.Models;
 
-namespace ApiStudent.Controllers;
+namespace ApiUniversity.Controllers;
 
 [ApiController]
 [Route("api/student")]
