@@ -1,5 +1,6 @@
 namespace ApiUniversity.Models;
 
+
 public class Course
 {
     public int Id { get; set; }
@@ -9,10 +10,10 @@ public class Course
 
     public Course() { }
 
-    /*public Course(CourseDTO courseDTO)
+    public Course(CourseDTO courseDTO)
     {
         Id = courseDTO.Id;
         Title = courseDTO.Title;
         Credits = courseDTO.Credits;
-    }*/
+    }
 }
