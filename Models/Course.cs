@@ -7,6 +7,9 @@ public class Course
     public string Title { get; set; } = null!;
     public int Credits { get; set; }
     public List<Enrollment> Enrollments { get; set; } = new();
+    public int ?DepartementId { get; set; }
+    public Departement ?Departement { get; set; }
+    public List<Instructor> ?Instructors { get; set; } = new();
 
     public Course() { }
 
