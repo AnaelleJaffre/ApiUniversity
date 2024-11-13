@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiUniversity.Migrations
 {
     [DbContext(typeof(UniversityContext))]
-    [Migration("20241113091921_EmailForStudent")]
-    partial class EmailForStudent
+    [Migration("20241113105910_DatabasePart2")]
+    partial class DatabasePart2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,13 +28,38 @@ namespace ApiUniversity.Migrations
                     b.Property<int>("Credits")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("DepartementId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DepartementId");
+
                     b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("ApiUniversity.Models.Departement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("InstructorId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InstructorId");
+
+                    b.ToTable("Departements");
                 });
 
             modelBuilder.Entity("ApiUniversity.Models.Enrollment", b =>
@@ -59,6 +84,28 @@ namespace ApiUniversity.Migrations
                     b.HasIndex("StudentId");
 
                     b.ToTable("Enrollments");
+                });
+
+            modelBuilder.Entity("ApiUniversity.Models.Instructor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("HireDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Instructors");
                 });
 
             modelBuilder.Entity("ApiUniversity.Models.Student", b =>
@@ -87,6 +134,41 @@ namespace ApiUniversity.Migrations
                     b.ToTable("Students");
                 });
 
+            modelBuilder.Entity("CourseInstructor", b =>
+                {
+                    b.Property<int>("CoursesId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("InstructorsId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("CoursesId", "InstructorsId");
+
+                    b.HasIndex("InstructorsId");
+
+                    b.ToTable("CourseInstructor");
+                });
+
+            modelBuilder.Entity("ApiUniversity.Models.Course", b =>
+                {
+                    b.HasOne("ApiUniversity.Models.Departement", "Departement")
+                        .WithMany("Courses")
+                        .HasForeignKey("DepartementId");
+
+                    b.Navigation("Departement");
+                });
+
+            modelBuilder.Entity("ApiUniversity.Models.Departement", b =>
+                {
+                    b.HasOne("ApiUniversity.Models.Instructor", "Administrator")
+                        .WithMany("AdministeredDepartments")
+                        .HasForeignKey("InstructorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Administrator");
+                });
+
             modelBuilder.Entity("ApiUniversity.Models.Enrollment", b =>
                 {
                     b.HasOne("ApiUniversity.Models.Course", "Course")
@@ -106,9 +188,34 @@ namespace ApiUniversity.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("CourseInstructor", b =>
+                {
+                    b.HasOne("ApiUniversity.Models.Course", null)
+                        .WithMany()
+                        .HasForeignKey("CoursesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ApiUniversity.Models.Instructor", null)
+                        .WithMany()
+                        .HasForeignKey("InstructorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ApiUniversity.Models.Course", b =>
                 {
                     b.Navigation("Enrollments");
+                });
+
+            modelBuilder.Entity("ApiUniversity.Models.Departement", b =>
+                {
+                    b.Navigation("Courses");
+                });
+
+            modelBuilder.Entity("ApiUniversity.Models.Instructor", b =>
+                {
+                    b.Navigation("AdministeredDepartments");
                 });
 
             modelBuilder.Entity("ApiUniversity.Models.Student", b =>
