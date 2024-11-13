@@ -8,6 +8,6 @@ public class Instructor
     public string FirstName { get; set; } = null!;
     public DateTime HireDate { get; set; }
     public List<Course> ?Courses { get; set; }
-    public List<Departement> AdministeredDepartments { get; set; } = null!;
+    public List<Department> AdministeredDepartments { get; set; } = null!;
 
 }
