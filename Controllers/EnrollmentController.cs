@@ -37,7 +37,7 @@ public class EnrollmentController : ControllerBase
 
     // POST: api/enrollment
     [HttpPost]
-    public async Task<ActionResult<Enrollment>> PostEnrollment(EnrollmentDTO enrollmentDTO)
+    public async Task<ActionResult<DetailedEnrollmentDTO>> PostEnrollment(EnrollmentDTO enrollmentDTO)
     {
         Enrollment enrollment = new Enrollment(enrollmentDTO);
 

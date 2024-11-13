@@ -17,18 +17,26 @@ public class StudentController : ControllerBase
 
     // GET: api/student
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
+    public async Task<ActionResult<IEnumerable<StudentDTO>>> GetStudents()
     {
-        // Get students and related lists
-        var students = _context.Students;
-        return await students.ToListAsync();
+        var students = await _context.Students.ToListAsync();
+        var studentDTOs = students.Select(student => new StudentDTO
+        {
+            Id = student.Id,
+            FirstName = student.FirstName,
+            LastName = student.LastName,
+            Email = student.Email,
+            EnrollmentDate = student.EnrollmentDate
+        }).ToList();
+
+        return studentDTOs;
     }
 
 
 
     // GET: api/student/2
     [HttpGet("{id}")]
-    public async Task<ActionResult<Student>> GetStudent(int id)
+    public async Task<ActionResult<StudentDTO>> GetStudent(int id)
     {
         // Find student and related list
         // SingleAsync() throws an exception if no student is found (which is possible, depending on id)
@@ -38,26 +46,55 @@ public class StudentController : ControllerBase
         if (student == null)
             return NotFound();
 
-        return student;
+        return new StudentDTO(student);
     }
 
     // POST: api/student
     [HttpPost]
-    public async Task<ActionResult<Student>> PostStudent(Student student)
+    public async Task<ActionResult<StudentDTO>> PostStudent(StudentDTO studentDTO)
     {
+        // Conversion du DTO en entité Student
+        var student = new Student
+        {
+            Id = studentDTO.Id, // Si tu veux permettre à l'utilisateur de spécifier un Id, sinon laisse le vide.
+            FirstName = studentDTO.FirstName,
+            LastName = studentDTO.LastName,
+            // Ajoute d'autres propriétés selon ton modèle
+        };
+
+        // Ajout du nouvel étudiant dans la base de données
         _context.Students.Add(student);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetStudent), new { id = student.Id }, student);
+        // Retourne le DTO correspondant
+        var createdStudentDTO = new StudentDTO
+        {
+            Id = student.Id,
+            FirstName = student.FirstName,
+            LastName = student.LastName,
+            // Ajoute d'autres propriétés si nécessaire
+        };
+
+        return CreatedAtAction(nameof(GetStudent), new { id = student.Id }, createdStudentDTO);
     }
 
     // PUT: api/student/2
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutStudent(int id, Student student)
+    public async Task<IActionResult> PutStudent(int id, StudentDTO studentDTO)
     {
-        if (id != student.Id)
+        if (id != studentDTO.Id)
             return BadRequest();
 
+        // Conversion du StudentDTO en Student
+        var student = new Student
+        {
+            Id = studentDTO.Id,
+            FirstName = studentDTO.FirstName,
+            LastName = studentDTO.LastName,
+            // Ajoute d'autres propriétés selon ton modèle
+        };
+
+        // Mise à jour de l'étudiant dans la base de données
         _context.Entry(student).State = EntityState.Modified;
 
         try
@@ -75,6 +112,7 @@ public class StudentController : ControllerBase
         return NoContent();
     }
 
+
     // DELETE: api/student/2
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteStudentItem(int id)
@@ -84,9 +122,20 @@ public class StudentController : ControllerBase
         if (student == null)
             return NotFound();
 
+        // Suppression de l'étudiant
         _context.Students.Remove(student);
         await _context.SaveChangesAsync();
 
-        return NoContent();
+        // Retourner le DTO de l'étudiant supprimé (si nécessaire)
+        var studentDTO = new StudentDTO
+        {
+            Id = student.Id,
+            FirstName = student.FirstName,
+            LastName = student.LastName,
+            // Ajoute d'autres propriétés si nécessaire
+        };
+
+        return Ok(studentDTO); // Optionnel, retourne un DTO après la suppression
     }
+
 }
